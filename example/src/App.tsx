@@ -4,6 +4,9 @@ import {
   openSubscriptionManager,
   addCardSwitcherListener,
   addSubscriptionManagerListener,
+  eventNames,
+  type EventEvent,
+  type ErrorEvent,
 } from '../../src/index';
 import { useEffect } from 'react';
 
@@ -23,6 +26,14 @@ export default function App() {
     });
   };
 
+  const tempOnEvent = (event: ErrorEvent) => {
+    console.log('onError', 'event', event);
+  };
+
+  const temp = (event: EventEvent) => {
+    console.log('onEvent', 'event', event);
+  };
+
   useEffect(() => {
     const emitterSubscription = addCardSwitcherListener(
       'onSuccess',
@@ -37,13 +48,24 @@ export default function App() {
       }
     );
 
-    const emitterSwitcherEvent = addCardSwitcherListener('onEvent', (event) => {
-      console.log('onEvent switcher', 'event', event);
-    });
+    const emitterSwitcherEvent = addCardSwitcherListener('onEvent', temp);
+
+    const emitterSwitcherError = addCardSwitcherListener(
+      'onError',
+      tempOnEvent
+    );
+
+    let emitterSwitcherExit = addCardSwitcherListener(
+      eventNames.onExit,
+      () => {}
+    );
+
     return () => {
       emitterSubscription.remove();
       emitterSwitcher.remove();
       emitterSwitcherEvent.remove();
+      emitterSwitcherError.remove();
+      emitterSwitcherExit.remove();
     };
   }, []);
 

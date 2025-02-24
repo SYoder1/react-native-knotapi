@@ -5,20 +5,18 @@ Knot is for when there's knot an API - change card on file information, cancel s
 ## Installation
 
 ```sh
-npm install react-native-knotapi
+npm install react-native-knotapi  --save
 ```
 
-## Usage
+OR
 
-
-```js
-import { multiply } from 'react-native-knotapi';
-
-// ...
-
-const result = await multiply(3, 7);
+```sh
+yarn add react-native-knotapi
 ```
 
+## Documentation
+
+https://docs.knotapi.com/docs/react-native
 
 ## Contributing
 

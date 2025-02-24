@@ -35,15 +35,43 @@ type CommonConfig = {
   entryPoint?: string;
 };
 
-type ErrorCallback = (errorCode: string, message: string) => void;
-type EventCallback = (
-  event: string,
-  merchant: string,
-  payload?: Record<string, unknown>,
-  taskId?: string
-) => void;
-type SuccessCallback = (merchant: string) => void;
-type ExitCallback = () => void;
+export type SuccessEvent = string;
+
+export type ErrorEvent = {
+  errorCode: string;
+  errorMessage: string;
+};
+
+export type EventEvent = {
+  event:
+    | 'refresh session request'
+    | 'merchant clicked'
+    | 'login started'
+    /**
+     * @deprecated
+     */
+    | 'login success'
+    | 'authenticated'
+    | 'require otp';
+  taskId: string;
+  merchant: string;
+};
+
+export type EventTypes = {
+  onSuccess: SuccessEvent;
+  onError: ErrorEvent;
+  onEvent: EventEvent;
+  onExit: undefined;
+};
+
+type EventNames = keyof EventTypes;
+
+export const eventNames: { [K in EventNames]: K } = {
+  onSuccess: 'onSuccess',
+  onError: 'onError',
+  onEvent: 'onEvent',
+  onExit: 'onExit',
+};
 
 export const openCardOnFileSwitcher = (params: CommonConfig) => {
   InteractionManager.runAfterInteractions(() => {
@@ -63,13 +91,6 @@ export const openSubscriptionManager = (params: CommonConfig) => {
       Knotapi?.openSubscriptionManager(params);
     }, 50);
   });
-};
-
-type EventTypes = {
-  onSuccess: SuccessCallback;
-  onError: ErrorCallback;
-  onEvent: EventCallback;
-  onExit: ExitCallback;
 };
 
 export const addSubscriptionManagerListener = <T extends keyof EventTypes>(
